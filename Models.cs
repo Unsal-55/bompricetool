@@ -30,3 +30,30 @@ public class Stock
     public int Level { get; set; }
     public int Status { get; set; }
 }
+
+public class BomLine
+{
+    public string Category { get; set; } = "";
+    public int Quantity { get; set; }
+    public string References { get; set; } = "";
+    public string Value { get; set; } = "";
+    public string StockCode { get; set; } = "";
+
+    // Returns the Farnell order code, or null if this line has none.
+    public string? FarnellOrderCode
+    {
+        get
+        {
+            const string prefix = "Farnell ";
+            if (StockCode.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+            {
+                string code = StockCode.Substring(prefix.Length).Trim();
+                if (code.Length > 0 && code.All(char.IsDigit))
+                {
+                    return code;
+                }
+            }
+            return null;
+        }
+    }
+}
