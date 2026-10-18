@@ -16,6 +16,32 @@ public class Product
     public string TranslatedManufacturerPartNumber { get; set; } = "";
     public List<PriceBreak> Prices { get; set; } = new();
     public Stock? Stock { get; set; }
+
+    // Returns the unit price for the given quantity, or null if there are no prices.
+    public decimal? GetUnitPrice(int quantity)
+    {
+        if (Prices.Count == 0)
+        {
+            return null;
+        }
+
+        foreach (PriceBreak pb in Prices)
+        {
+            if (quantity >= pb.From && quantity <= pb.To)
+            {
+                return pb.Cost;
+            }
+        }
+
+        // Quantity is below the first break: use the first price (we ignore minimum quantities).
+        if (quantity < Prices[0].From)
+        {
+            return Prices[0].Cost;
+        }
+
+        // Quantity is above all breaks: use the last price.
+        return Prices[Prices.Count - 1].Cost;
+    }
 }
 
 public class PriceBreak
